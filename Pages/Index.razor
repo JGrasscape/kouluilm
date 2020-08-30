@@ -1,0 +1,46 @@
+﻿@page "/"
+
+@inject KoulutusService KoulutusService
+
+<head>
+    <h1>EPSHP - Koulutuksiin ilmoittautuminen</h1>
+</head>
+
+<div>
+    <EditForm Model="@koulutus">
+        <label for="koulutus">Koulutus:</label>
+        <InputSelect Value="@koulutus.Koulutus_ID" ValueChanged="@((string value) => koulutusMuutos(value))" ValueExpression="@(() => koulutus.Koulutus_ID)">
+            @foreach (var koulutus in koulutukset)
+            {
+                <option value="@koulutus.Koulutus_ID">@koulutus.Nimi</option>
+            }
+        </InputSelect>
+    </EditForm>
+</div>
+
+<div>
+    <p>Debuggia: @debug</p>
+</div>
+
+<footer>
+    <p>&copy; EPSHP</p>
+</footer>
+
+@code {
+    private Koulutus koulutus = new Koulutus();
+    private List<Koulutus> koulutukset;
+    private string debug = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        koulutukset = await KoulutusService.GetKoulutusAsync();
+    }
+
+    private Task koulutusMuutos(string value)
+    {
+        debug = value;
+
+        koulutus.Koulutus_ID = value;
+        return Task.CompletedTask;
+    }
+}
