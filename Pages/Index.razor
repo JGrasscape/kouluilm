@@ -6,11 +6,11 @@
     <h1>EPSHP - Koulutuksiin ilmoittautuminen</h1>
 </head>
 
-<div>
+<div class="form-group">
     <EditForm Model="@koulutus">
         <label for="koulutus">Koulutus:</label>
-        <InputSelect Value="@koulutus.Koulutus_ID" ValueChanged="@((string value) => koulutusMuutos(value))" ValueExpression="@(() => koulutus.Koulutus_ID)">
-            <option value="0">Valitse...</option>
+        <InputSelect class="form-control" Value="@koulutus.Koulutus_ID" ValueChanged="@((string value) => koulutusMuutos(value))" ValueExpression="@(() => koulutus.Koulutus_ID)">
+            <option value="">Valitse...</option>
             @foreach (var koulutus in koulutukset)
             {
                 <option value="@koulutus.Koulutus_ID">@koulutus.Nimi</option>
@@ -19,16 +19,42 @@
     </EditForm>
 </div>
 
-<div>
-    <p>Debuggia: @debug</p>
-</div>
+@if (koulutus.Koulutus_ID == null)
+{
+    // Ei näytetä koulutuksia
+}
+else
+{
+    <div>
+        <p>@selite</p>
+    </div>
 
-<div>
-    <p>@selite</p>
-</div>
+    <div>
+        <h4>Koulutukset:</h4>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Pvm</th>
+                    <th>Kello</th>
+                    <th>Sijainti</th>
+                    <th>Osallistujat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>7.9.2020</td>
+                    <td>8:00-15:00</td>
+                    <td>Mediwestin ATK-luokka</td>
+                    <td>10 / 14</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
 
 <footer>
     <p>&copy; EPSHP</p>
+    <p>Debuggia: @debug</p>
 </footer>
 
 @code {
@@ -38,11 +64,17 @@
 
     protected override async Task OnInitializedAsync()
     {
+        // Haetaan koulutukset
+        // TODO: Hae vain tulevat
+        // TODO: Oma metodi myös menneille koulutuksille
         koulutukset = await KoulutusService.GetKoulutusAsync();
     }
 
     private Task koulutusMuutos(string value)
     {
+        //koulutus.Koulutus_ID = null;
+        //debug = "0";
+
         koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
         debug = koulutus.Koulutus_ID + " - " + koulutus.Nimi;
         selite = koulutus.Selite;
