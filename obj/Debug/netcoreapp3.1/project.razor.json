@@ -12,35 +12,35 @@
   "ProjectWorkspaceState": {
     "TagHelpers": [
       {
-        "HashCode": 1106139583,
+        "HashCode": -1311118628,
         "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Index",
+        "Name": "kouluilm.App",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "Index"
+            "TagName": "App"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Index"
+          "Common.TypeName": "kouluilm.App"
         }
       },
       {
-        "HashCode": -2078733842,
+        "HashCode": -1244042259,
         "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Index",
+        "Name": "kouluilm.App",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "kouluilm.Pages.Index"
+            "TagName": "kouluilm.App"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Index",
+          "Common.TypeName": "kouluilm.App",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -227,35 +227,35 @@
         }
       },
       {
-        "HashCode": -1311118628,
+        "HashCode": 1106139583,
         "Kind": "Components.Component",
-        "Name": "kouluilm.App",
+        "Name": "kouluilm.Pages.Index",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "App"
+            "TagName": "Index"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.App"
+          "Common.TypeName": "kouluilm.Pages.Index"
         }
       },
       {
-        "HashCode": -1244042259,
+        "HashCode": -2078733842,
         "Kind": "Components.Component",
-        "Name": "kouluilm.App",
+        "Name": "kouluilm.Pages.Index",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "kouluilm.App"
+            "TagName": "kouluilm.Pages.Index"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.App",
+          "Common.TypeName": "kouluilm.Pages.Index",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },

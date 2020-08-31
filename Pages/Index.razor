@@ -10,6 +10,7 @@
     <EditForm Model="@koulutus">
         <label for="koulutus">Koulutus:</label>
         <InputSelect Value="@koulutus.Koulutus_ID" ValueChanged="@((string value) => koulutusMuutos(value))" ValueExpression="@(() => koulutus.Koulutus_ID)">
+            <option value="0">Valitse...</option>
             @foreach (var koulutus in koulutukset)
             {
                 <option value="@koulutus.Koulutus_ID">@koulutus.Nimi</option>
@@ -38,7 +39,7 @@
 
     private Task koulutusMuutos(string value)
     {
-        debug = value;
+        debug = value;        
 
         koulutus.Koulutus_ID = value;
         return Task.CompletedTask;
