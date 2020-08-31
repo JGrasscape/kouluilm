@@ -26,7 +26,9 @@ namespace kouluilm
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
-            services.AddServerSideBlazor();            
+            services.AddServerSideBlazor();   
+
+            // KoulutusService kuuntelulle         
             services.AddSingleton<KoulutusService>();
         }
 

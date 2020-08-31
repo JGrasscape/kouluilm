@@ -23,6 +23,10 @@
     <p>Debuggia: @debug</p>
 </div>
 
+<div>
+    <p>@selite</p>
+</div>
+
 <footer>
     <p>&copy; EPSHP</p>
 </footer>
@@ -30,7 +34,7 @@
 @code {
     private Koulutus koulutus = new Koulutus();
     private List<Koulutus> koulutukset;
-    private string debug = "";
+    private string debug = "", selite = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,9 +43,10 @@
 
     private Task koulutusMuutos(string value)
     {
-        debug = value;        
+        koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
+        debug = koulutus.Koulutus_ID + " - " + koulutus.Nimi;
+        selite = koulutus.Selite;
 
-        koulutus.Koulutus_ID = value;
         return Task.CompletedTask;
     }
 }
