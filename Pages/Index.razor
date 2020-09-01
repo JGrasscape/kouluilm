@@ -1,6 +1,8 @@
 ﻿@page "/"
 
 @inject KoulutusService KoulutusService
+@inject ResurssiService ResurssiService
+@inject VarausService VarausService
 
 <head>
     <h1>EPSHP - Koulutuksiin ilmoittautuminen</h1>
@@ -38,15 +40,20 @@ else
                     <th>Kello</th>
                     <th>Sijainti</th>
                     <th>Osallistujat</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>7.9.2020</td>
-                    <td>8:00-15:00</td>
-                    <td>Mediwestin ATK-luokka</td>
-                    <td>10 / 14</td>
-                </tr>
+                @foreach (var varaus in varaukset)
+                {
+                    <tr>
+                        <td>24.12.2020</td>
+                        <td>@varaus.Kloalku - @varaus.Kloloppu</td>
+                        <td>Mediwestin ATK-luokka</td>
+                        <td>10 / 14</td>
+                        <td><button class="button">Ilmoittaudu</button></td>
+                    </tr>
+                }                
             </tbody>
         </table>
     </div>
@@ -60,25 +67,63 @@ else
 @code {
     private Koulutus koulutus = new Koulutus();
     private List<Koulutus> koulutukset;
+    private List<Resurssi> resurssit;    
+    private List<Varaus> varaukset;    
     private string debug = "", selite = "";
 
     protected override async Task OnInitializedAsync()
     {
-        // Haetaan koulutukset
+        // Haetaan koulutukset ja resurssit
         // TODO: Hae vain tulevat
         // TODO: Oma metodi myös menneille koulutuksille
         koulutukset = await KoulutusService.GetKoulutusAsync();
+        resurssit = await ResurssiService.GetResurssiAsync();
     }
 
-    private Task koulutusMuutos(string value)
+    private async Task koulutusMuutos(string value)
     {
-        //koulutus.Koulutus_ID = null;
-        //debug = "0";
-
-        koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
-        debug = koulutus.Koulutus_ID + " - " + koulutus.Nimi;
+        // Valitaan kyseinen koulutus-olio listalta
+        koulutus = koulutukset.Single(k => k.Koulutus_ID == value);        
         selite = koulutus.Selite;
 
-        return Task.CompletedTask;
+        // Haetaan tilavaraukset asiasanojen mukaisesti valitulle koulutukselle
+        // Pilkotaan ensin asia- ja kieltosanat
+        string sql = "";
+        string[] sanat = koulutus.Asiasanat.Split(' ');
+
+        foreach (string sana in sanat)
+        {
+            sql += " AND aihe LIKE '%" + sana + "%'";
+        }
+
+        if (koulutus.Kieltosanat != null)
+        {
+            sanat = koulutus.Kieltosanat.Split(' ');
+            foreach (string sana in sanat)
+            {
+                sql += " AND aihe NOT LIKE '%" + sana + "%'";
+            }
+        }        
+
+        // Koulutuksiin käytettävät resurssit
+        string sql2 = "";
+
+        foreach (Resurssi r in resurssit)
+        {
+            sql2 += r.Resurssi_ID.ToString() + ", ";
+        }
+
+        // TODO: tarkista haetaanko vain tulevat koulutukset        
+
+        // Haetaan tilavaraukset
+        debug = sql2;
+        varaukset = await VarausService.GetVarausAsync(sql, sql2);
+
+        foreach (Varaus v in varaukset)
+        {
+            debug += v.Aihe;
+        }
+
+        //return Task.CompletedTask;
     }
 }

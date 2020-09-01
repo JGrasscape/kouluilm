@@ -28,8 +28,10 @@ namespace kouluilm
             services.AddRazorPages();
             services.AddServerSideBlazor();   
 
-            // KoulutusService kuuntelulle         
+            // Servicet kuuntelulle         
             services.AddSingleton<KoulutusService>();
+            services.AddSingleton<ResurssiService>();
+            services.AddSingleton<VarausService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
