@@ -32,11 +32,11 @@ namespace kouluilm.Data
                         varaus = new Varaus();
                         varaus.Varaus_ID = reader.GetInt32(0);
                         varaus.Resurssi_ID = reader.GetInt32(1);
-                        //varaus.Varauspvm = reader.GetDateTime(2);
+                        varaus.Varauspvm = reader.GetDateTime(2);
                         varaus.Kloalku = reader.GetString(3);
                         varaus.Kloloppu = reader.GetString(4);
                         varaus.Varaaja = reader.GetString(5);
-                        //varaus.Varattupvm = reader.GetDateTime(6);
+                        varaus.Varattupvm = reader.GetDateTime(6);
                         varaus.Aihe = reader.GetString(7);
 
                         varaukset.Add(varaus);

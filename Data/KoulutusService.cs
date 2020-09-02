@@ -37,7 +37,7 @@ namespace kouluilm.Data
                         //koulutus.Loppupvm = reader.GetDateTime(4);
                         koulutus.Selite = reader.GetString(5);
                         //koulutus.Kieltosanat = reader.GetString(6);
-                        //koulutus.piilotettu = reader.GetBoolean(7);
+                        koulutus.piilotettu = reader.GetBoolean(7);
 
                         koulutukset.Add(koulutus);
                     }

@@ -41,7 +41,6 @@ else
                     <th>Kello</th>
                     <th>Sijainti</th>
                     <th>Osallistujat</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -51,13 +50,30 @@ else
                     {
                         if (varaus.Resurssi_ID == resurssi.Resurssi_ID)
                         {
-                            <tr>
+                            <tr @onclick="@naytaOsallistujatFunc">                            
                                 <td>@varaus.Varauspvm.ToShortDateString()</td>
                                 <td>@varaus.Kloalku - @varaus.Kloloppu</td>
                                 <td>@resurssi.Nimi</td>
                                 <td>@varaus.Osallistujat / @resurssi.Paikkalkm</td>
-                                <td><button class="button">Ilmoittaudu</button></td>
                             </tr>
+
+                            if (@naytaOsallistujat)
+                            {
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Paikka</th>
+                                            <th>Osallistuja</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>1</td>
+                                            <td>Teppo</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            }
                         }
                     }
                 }                
@@ -77,6 +93,13 @@ else
     private List<Resurssi> resurssit;    
     private List<Varaus> varaukset;    
     private string debug = "", selite = "";
+    private bool naytaOsallistujat = false;
+    
+    private void naytaOsallistujatFunc()
+    {
+        //debug = varaus_id.ToString();        
+        naytaOsallistujat = !naytaOsallistujat;
+    }    
 
     protected override async Task OnInitializedAsync()
     {
