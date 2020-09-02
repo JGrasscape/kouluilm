@@ -32,6 +32,7 @@ namespace kouluilm
             services.AddSingleton<KoulutusService>();
             services.AddSingleton<ResurssiService>();
             services.AddSingleton<VarausService>();
+            services.AddSingleton<IlmoittautuminenService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

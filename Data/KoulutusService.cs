@@ -22,7 +22,7 @@ namespace kouluilm.Data
                 connection.Open();
 
                 var sql = connection.CreateCommand();
-                sql.CommandText = "SELECT * FROM koulutus_koulutukset";
+                sql.CommandText = "SELECT * FROM koulutus_koulutukset WHERE piilotettu=0";
 
                 using(var reader = sql.ExecuteReader())
                 {

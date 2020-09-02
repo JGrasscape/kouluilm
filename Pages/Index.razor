@@ -3,6 +3,7 @@
 @inject KoulutusService KoulutusService
 @inject ResurssiService ResurssiService
 @inject VarausService VarausService
+@inject IlmoittautuminenService IlmoittautuminenService
 
 <head>
     <h1>EPSHP - Koulutuksiin ilmoittautuminen</h1>
@@ -44,15 +45,21 @@ else
                 </tr>
             </thead>
             <tbody>
-                @foreach (var varaus in varaukset)
+                @foreach (var varaus in varaukset) // Tilavaraukset läpi
                 {
-                    <tr>
-                        <td>24.12.2020</td>
-                        <td>@varaus.Kloalku - @varaus.Kloloppu</td>
-                        <td>Mediwestin ATK-luokka</td>
-                        <td>10 / 14</td>
-                        <td><button class="button">Ilmoittaudu</button></td>
-                    </tr>
+                    foreach (var resurssi in resurssit) // Resurssit läpi
+                    {
+                        if (varaus.Resurssi_ID == resurssi.Resurssi_ID)
+                        {
+                            <tr>
+                                <td>@varaus.Varauspvm.ToShortDateString()</td>
+                                <td>@varaus.Kloalku - @varaus.Kloloppu</td>
+                                <td>@resurssi.Nimi</td>
+                                <td>@varaus.Osallistujat / @resurssi.Paikkalkm</td>
+                                <td><button class="button">Ilmoittaudu</button></td>
+                            </tr>
+                        }
+                    }
                 }                
             </tbody>
         </table>
@@ -116,12 +123,12 @@ else
         // TODO: tarkista haetaanko vain tulevat koulutukset        
 
         // Haetaan tilavaraukset
-        debug = sql2;
         varaukset = await VarausService.GetVarausAsync(sql, sql2);
 
         foreach (Varaus v in varaukset)
         {
-            debug += v.Aihe;
+            // Lasketaan ilmoittautuneet ja talletetaan olioon
+            v.Osallistujat = await IlmoittautuminenService.GetOsallistujatAsync(v.Varaus_ID);
         }
 
         //return Task.CompletedTask;

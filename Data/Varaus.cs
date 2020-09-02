@@ -12,5 +12,6 @@ namespace kouluilm.Data
         public string Varaaja { get; set; }
         public DateTime Varattupvm { get; set; }
         public string Aihe { get; set; }
+        public int Osallistujat { get; set; } // Tämä tieto ei tietokannassa, mutta lasketaan myöhemmin ilmoittautumisten perusteella
     }
 }
