@@ -6,7 +6,7 @@ namespace kouluilm.Data
 {
     public class IlmoittautuminenService
     {
-        public Task<int> GetOsallistujatAsync(int linkki_varaus_id)
+        public Task<int> GetOsallistujatCountAsync(int linkki_varaus_id)
         {
             // Muuttujat
             int osallistujat = 0;
@@ -34,6 +34,52 @@ namespace kouluilm.Data
             }
 
             Task<int> task = Task.FromResult(osallistujat);
+            return task;
+        }
+
+        public Task<List<Ilmoittautuminen>> GetOsallistujatAsync(int linkki_varaus_id)
+        {
+            // Muuttujat
+            List<Ilmoittautuminen> ilmoittautumiset = new List<Ilmoittautuminen>();
+            Ilmoittautuminen ilmoittautuminen = new Ilmoittautuminen();
+
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                var sql = connection.CreateCommand();
+                sql.CommandText = "SELECT * FROM koulutus_ilmoittautumiset WHERE linkki_varaus_id=" + linkki_varaus_id + " ORDER BY paikka";
+
+                //osallistujat = (int)sql.ExecuteScalar();
+                using(var reader = sql.ExecuteReader())
+                {
+                    while(reader.Read())
+                    {
+                        // Luetaan rivin tiedot olioon
+                        ilmoittautuminen = new Ilmoittautuminen();
+                        ilmoittautuminen.Varaus_ID = reader.GetInt32(0);
+                        ilmoittautuminen.Linkki_Varaus_ID = reader.GetInt32(1);
+                        ilmoittautuminen.Koulutus_ID = reader.GetInt32(2);
+                        ilmoittautuminen.Paikka = reader.GetInt32(3);
+                        ilmoittautuminen.Varaaja = reader.GetString(4);
+                        ilmoittautuminen.Varattupvm = reader.GetDateTime(5);
+                        ilmoittautuminen.Nimi = reader.GetString(6);
+                        ilmoittautuminen.Yksikko = reader.GetString(7);
+                        ilmoittautuminen.Puh = reader.GetString(8);
+                        //ilmoittautuminen.Koulutus_OK = reader.GetBoolean(9);
+                        //ilmoittautuminen.EHRM_OK = reader.GetBoolean(10);
+
+                        ilmoittautumiset.Add(ilmoittautuminen);
+                    }
+                }
+            }
+
+            Task<List<Ilmoittautuminen>> task = Task.FromResult(ilmoittautumiset);
             return task;
         }
     }

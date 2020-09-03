@@ -13,5 +13,6 @@ namespace kouluilm.Data
         public DateTime Varattupvm { get; set; }
         public string Aihe { get; set; }
         public int Osallistujat { get; set; } // Tämä tieto ei tietokannassa, mutta lasketaan myöhemmin ilmoittautumisten perusteella
+        //public int Koulutus_ID { get; set; } // Tämä tieto ei tietokannassa, mutta asetetaan koodissa
     }
 }

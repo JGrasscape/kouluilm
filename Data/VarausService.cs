@@ -6,7 +6,7 @@ namespace kouluilm.Data
 {
     public class VarausService
     {
-        public Task<List<Varaus>> GetVarausAsync(string sql1, string sql2)
+        public Task<List<Varaus>> GetVarausAsync(string sql1, string sql2)//, int koulutus_id)
         {
             // Muuttujat
             List<Varaus> varaukset = new List<Varaus>();
@@ -38,6 +38,7 @@ namespace kouluilm.Data
                         varaus.Varaaja = reader.GetString(5);
                         varaus.Varattupvm = reader.GetDateTime(6);
                         varaus.Aihe = reader.GetString(7);
+                        //varaus.Koulutus_ID = koulutus_id;
 
                         varaukset.Add(varaus);
                     }
