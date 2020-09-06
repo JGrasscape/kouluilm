@@ -70,14 +70,15 @@ else
                                         <th><button id="varaa">Varaa</button></th>
                                     </tr>
                                 </thead>
-                                <tbody>                                    
-                                    @{Console.WriteLine("Menossa looppiin");}
+                                <tbody>
+                                    @{                                        
+                                        bool found = false;
+                                    }                                    
                                     @for (int i = 1; i <= resurssi.Paikkalkm; i++)
                                     {
-                                        Console.WriteLine("i=" + i.ToString());
+                                        found = false;                                        
                                         @foreach (var ilm in ilmoittautumiset) // Osallistujat läpi
-                                        {      
-                                            Console.WriteLine("paikka=" + ilm.Paikka.ToString());                                                                           
+                                        {                                            
                                             if (i == ilm.Paikka)
                                             {
                                                 <tr>
@@ -85,15 +86,17 @@ else
                                                     <td>@ilm.Nimi</td>
                                                     <td></td>
                                                 </tr>
-                                            }
-                                            else
-                                            {
-                                                <tr>
-                                                    <td>@i</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                </tr>
-                                            }
+                                                found = true;
+                                                break;
+                                            }                                           
+                                        }
+                                        if (!found)
+                                        {
+                                            <tr>
+                                                <td>@i</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
                                         }
                                     }
                                 </tbody>
@@ -108,41 +111,39 @@ else
 
 <footer>
     <p>&copy; EPSHP</p>
-    <p>Debuggia: @debug</p>
 </footer>
 
 @code {
     private Koulutus koulutus = new Koulutus();
     private List<Koulutus> koulutukset;
     private Resurssi resurssi = new Resurssi();
-    private List<Resurssi> resurssit;    
-    private List<Varaus> varaukset;   
-    private List<Ilmoittautuminen> ilmoittautumiset; 
-    private string debug = "", selite = "";
+    private List<Resurssi> resurssit;
+    private List<Varaus> varaukset;
+    private List<Ilmoittautuminen> ilmoittautumiset;
+    private string selite = "";
     private bool naytaOsallistujat = false;
-    
+
     private async void naytaOsallistujatFunc(int varaus_id)
-    {        
-        //debug += varaus_id.ToString();     
+    {          
         // Haetaan ilmoittautujat   
         ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(varaus_id);
 
         naytaOsallistujat = !naytaOsallistujat;
-    }    
+    }
 
     protected override async Task OnInitializedAsync()
     {
         // Haetaan koulutukset ja resurssit
         // TODO: Hae vain tulevat
         // TODO: Oma metodi myös menneille koulutuksille
-        koulutukset = await KoulutusService.GetKoulutusAsync();
+        koulutukset = await KoulutusService.GetKoulutusAsync("=0");
         resurssit = await ResurssiService.GetResurssiAsync();
     }
 
     private async Task koulutusMuutos(string value)
     {
         // Valitaan kyseinen koulutus-olio listalta
-        koulutus = koulutukset.Single(k => k.Koulutus_ID == value);        
+        koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
         selite = koulutus.Selite;
 
         // Haetaan tilavaraukset asiasanojen mukaisesti valitulle koulutukselle
@@ -162,7 +163,7 @@ else
             {
                 sql += " AND aihe NOT LIKE '%" + sana + "%'";
             }
-        }        
+        }
 
         // Koulutuksiin käytettävät resurssit
         string sql2 = "";

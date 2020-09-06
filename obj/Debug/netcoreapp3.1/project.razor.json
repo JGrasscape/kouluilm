@@ -260,6 +260,39 @@
         }
       },
       {
+        "HashCode": -868316686,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Pages.Hallinta",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Hallinta"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Pages.Hallinta"
+        }
+      },
+      {
+        "HashCode": 1272873693,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Pages.Hallinta",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "kouluilm.Pages.Hallinta"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Pages.Hallinta",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
         "HashCode": 2012882598,
         "Kind": "Components.Component",
         "Name": "Microsoft.AspNetCore.Components.Authorization.AuthorizeRouteView",
@@ -14639,6 +14672,11 @@
   },
   "RootNamespace": "kouluilm",
   "Documents": [
+    {
+      "FilePath": "c:\\temp\\Ohjelmistoprojekti\\kouluilm\\Pages\\Hallinta.razor",
+      "TargetPath": "Pages\\Hallinta.razor",
+      "FileKind": "component"
+    },
     {
       "FilePath": "c:\\temp\\Ohjelmistoprojekti\\kouluilm\\App.razor",
       "TargetPath": "App.razor",

@@ -71,8 +71,8 @@ namespace kouluilm.Data
                         ilmoittautuminen.Nimi = reader.GetString(6);
                         ilmoittautuminen.Yksikko = reader.GetString(7);
                         ilmoittautuminen.Puh = reader.GetString(8);
-                        //ilmoittautuminen.Koulutus_OK = reader.GetBoolean(9);
-                        //ilmoittautuminen.EHRM_OK = reader.GetBoolean(10);
+                        if(!reader.IsDBNull(9)) ilmoittautuminen.Koulutus_OK = reader.GetBoolean(9);
+                        if(!reader.IsDBNull(10)) ilmoittautuminen.EHRM_OK = reader.GetBoolean(10);
 
                         ilmoittautumiset.Add(ilmoittautuminen);
                     }

@@ -6,7 +6,7 @@ namespace kouluilm.Data
 {
     public class KoulutusService
     {
-        public Task<List<Koulutus>> GetKoulutusAsync()
+        public Task<List<Koulutus>> GetKoulutusAsync(string piilotettu)
         {
             // Muuttujat
             List<Koulutus> koulutukset = new List<Koulutus>();
@@ -22,7 +22,7 @@ namespace kouluilm.Data
                 connection.Open();
 
                 var sql = connection.CreateCommand();
-                sql.CommandText = "SELECT * FROM koulutus_koulutukset WHERE piilotettu=0";
+                sql.CommandText = "SELECT * FROM koulutus_koulutukset WHERE piilotettu " + piilotettu;
 
                 using(var reader = sql.ExecuteReader())
                 {
@@ -33,11 +33,11 @@ namespace kouluilm.Data
                         koulutus.Koulutus_ID = reader.GetInt32(0).ToString();
                         koulutus.Nimi = reader.GetString(1);
                         koulutus.Asiasanat = reader.GetString(2);
-                        //koulutus.Alkupvm = reader.GetDateTime(3);
-                        //koulutus.Loppupvm = reader.GetDateTime(4);
+                        if(!reader.IsDBNull(3)) koulutus.Alkupvm = reader.GetDateTime(3);
+                        if(!reader.IsDBNull(4)) koulutus.Loppupvm = reader.GetDateTime(4);
                         koulutus.Selite = reader.GetString(5);
-                        //koulutus.Kieltosanat = reader.GetString(6);
-                        koulutus.piilotettu = reader.GetBoolean(7);
+                        if(!reader.IsDBNull(6)) koulutus.Kieltosanat = reader.GetString(6);
+                        koulutus.Piilotettu = reader.GetBoolean(7);
 
                         koulutukset.Add(koulutus);
                     }
@@ -46,6 +46,28 @@ namespace kouluilm.Data
 
             Task<List<Koulutus>> task = Task.FromResult(koulutukset);
             return task;
+        }
+
+        public void UpdateKoulutusAsync(Koulutus koulutus)
+        {
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var updateCommand = connection.CreateCommand();
+                    // TODO fix piilotettu true=1 ja false=0
+                    updateCommand.CommandText = "UPDATE koulutus_koulutukset SET nimi='" + koulutus.Nimi + "', asiasanat='" + koulutus.Asiasanat +"', selite='" + koulutus.Selite + "', kieltosanat='" + koulutus.Kieltosanat + "', piilotettu='" + koulutus.Piilotettu + "' WHERE koulutus_id=" + koulutus.Koulutus_ID;
+                    updateCommand.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+            }
         }
     }
 }

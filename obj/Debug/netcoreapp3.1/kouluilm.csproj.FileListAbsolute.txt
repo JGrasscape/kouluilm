@@ -84,3 +84,5 @@ C:\temp\Ohjelmistoprojekti\kouluilm\obj\Debug\netcoreapp3.1\staticwebassets\koul
 C:\temp\Ohjelmistoprojekti\kouluilm\obj\Debug\netcoreapp3.1\kouluilm.dll
 C:\temp\Ohjelmistoprojekti\kouluilm\obj\Debug\netcoreapp3.1\kouluilm.pdb
 C:\temp\Ohjelmistoprojekti\kouluilm\obj\Debug\netcoreapp3.1\kouluilm.genruntimeconfig.cache
+C:\temp\Ohjelmistoprojekti\kouluilm\obj\Debug\netcoreapp3.1\RazorDeclaration\Pages\Hallinta.razor.g.cs
+C:\temp\Ohjelmistoprojekti\kouluilm\obj\Debug\netcoreapp3.1\Razor\Pages\Hallinta.razor.g.cs

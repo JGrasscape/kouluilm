@@ -11,6 +11,6 @@ namespace kouluilm.Data
         public DateTime Loppupvm { get; set; }
         public string Selite { get; set; }
         public string Kieltosanat { get; set; }
-        public bool piilotettu { get; set; }
+        public bool Piilotettu { get; set; }
     }
 }

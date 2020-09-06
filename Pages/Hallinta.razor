@@ -1,0 +1,99 @@
+﻿@page "/hallinta"
+
+@inject KoulutusService KoulutusService
+
+<head>
+    <h1>Hallinta</h1>
+</head>
+
+<div class="form-group">
+    <EditForm Model="@koulutus">
+        <label for="koulutus">Koulutus:</label>
+        <InputSelect class="form-control" Value="@koulutus.Koulutus_ID" ValueChanged="@((string value) => koulutusMuutos(value))" ValueExpression="@(() => koulutus.Koulutus_ID)">
+            <option value="">Valitse...</option>
+            @foreach (var koulutus in koulutukset)
+            {
+                <option value="@koulutus.Koulutus_ID">@koulutus.Nimi</option>
+            }
+        </InputSelect>
+    </EditForm>
+</div>
+
+@if (koulutus.Koulutus_ID == null)
+{
+    // Ei näytetä koulutuksia
+}
+else
+{
+    <div class="form-group">
+        <EditForm Model="@koulutus" OnValidSubmit="tallenna">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="nimi">Nimi:</label>
+                <!--<InputText id="nimi" class="form-control" Value="@koulutus.Nimi" ValueExpression="@(() => koulutus.Koulutus_ID)"></InputText>-->
+                <InputText id="nimi" class="form-control" @bind-Value="@koulutus.Nimi"></InputText>
+            </div>
+            <div class="form-group">
+                <label for="selite">Selite:</label>
+                <InputTextArea id="selite" class="form-control" @bind-Value="@koulutus.Selite"></InputTextArea>
+            </div>
+            <div class="form-group">
+                <label for="asiasanat">Asiasanat:</label>
+                <InputText id="asiasanat" class="form-control" @bind-Value="@koulutus.Asiasanat"></InputText>   
+            </div>
+            <div class="form-group">
+                <label for="kieltosanat">Kieltosanat:</label>
+                <InputText id="kieltosanat" class="form-control" @bind-Value="@koulutus.Kieltosanat"></InputText>          
+            </div>
+            <div class="form-group">
+                <label for="alkupvm">Alkupvm:</label>
+                <InputDate id="alkupvm" class="form-control" @bind-Value="@koulutus.Alkupvm"></InputDate>
+            </div>
+            <div class="form-group">
+                <label for="loppuvpm">Loppupvm:</label>
+                <InputDate id="loppuvpm" class="form-control" @bind-Value="@koulutus.Loppupvm"></InputDate>
+            </div>
+            <div class="form-group">
+                <label for="piilotettu">Piilotettu:</label>                
+                <InputCheckbox id="piilotettu" class="form-control" @bind-Value="@koulutus.Piilotettu"></InputCheckbox>
+            </div>
+            <div class="text-right">
+                <button type="submit" class="btn btn-primary">Tallenna</button>
+            </div>
+        </EditForm>
+    </div>
+}
+
+<footer>
+    <p>&copy; EPSHP</p>
+</footer>
+
+@code {
+    private Koulutus koulutus = new Koulutus();
+    private List<Koulutus> koulutukset;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Haetaan koulutuspohjat
+        koulutukset = await KoulutusService.GetKoulutusAsync("IN (0, 1)");        
+    }
+
+    private async Task koulutusMuutos(string value)
+    {
+        // Haetaan koulutuspohjat
+        koulutukset = await KoulutusService.GetKoulutusAsync("IN (0, 1)");  
+
+        // Valitaan kyseinen koulutus-olio listalta
+        koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
+
+        //return Task.CompletedTask;
+    }
+
+    private void tallenna()
+    {
+        //Console.WriteLine("Tallenna:");
+        //Console.WriteLine(koulutus.Nimi);
+        KoulutusService.UpdateKoulutusAsync(koulutus);
+        //return Task.CompletedTask;
+    }
+}
