@@ -62,12 +62,37 @@ namespace kouluilm.Data
                 using (var transaction = connection.BeginTransaction())
                 {
                     var updateCommand = connection.CreateCommand();
-                    // TODO fix piilotettu true=1 ja false=0
-                    updateCommand.CommandText = "UPDATE koulutus_koulutukset SET nimi='" + koulutus.Nimi + "', asiasanat='" + koulutus.Asiasanat +"', selite='" + koulutus.Selite + "', kieltosanat='" + koulutus.Kieltosanat + "', piilotettu='" + koulutus.Piilotettu + "' WHERE koulutus_id=" + koulutus.Koulutus_ID;
+                    int piilotettu = (koulutus.Piilotettu) ? 1 : 0;
+                    string alkupvm = koulutus.Alkupvm.ToString("yyyy-MM-dd");
+                    string loppupvm = koulutus.Loppupvm.ToString("yyyy-MM-dd");
+                    
+                    updateCommand.CommandText = "UPDATE koulutus_koulutukset SET nimi='" + koulutus.Nimi + "', asiasanat='" + koulutus.Asiasanat +"', alkupvm='" + alkupvm + "', loppupvm='" + loppupvm + "', selite='" + koulutus.Selite + "', kieltosanat='" + koulutus.Kieltosanat + "', piilotettu='" + piilotettu + "' WHERE koulutus_id=" + koulutus.Koulutus_ID;
                     updateCommand.ExecuteNonQuery();
                     transaction.Commit();
                 }
             }
         }
+
+        public void DeleteKoulutusAsync(Koulutus koulutus)
+        {
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var updateCommand = connection.CreateCommand();
+                    
+                    updateCommand.CommandText = "DELETE FROM koulutus_koulutukset WHERE koulutus_id=" + koulutus.Koulutus_ID;
+                    updateCommand.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+            }
+        } 
     }
 }

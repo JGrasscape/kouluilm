@@ -12,6 +12,72 @@
   "ProjectWorkspaceState": {
     "TagHelpers": [
       {
+        "HashCode": -868316686,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Pages.Hallinta",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Hallinta"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Pages.Hallinta"
+        }
+      },
+      {
+        "HashCode": 1272873693,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Pages.Hallinta",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "kouluilm.Pages.Hallinta"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Pages.Hallinta",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
+        "HashCode": 1106139583,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Pages.Index",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "Index"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Pages.Index"
+        }
+      },
+      {
+        "HashCode": -2078733842,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Pages.Index",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "kouluilm.Pages.Index"
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Pages.Index",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
         "HashCode": -1311118628,
         "Kind": "Components.Component",
         "Name": "kouluilm.App",
@@ -223,72 +289,6 @@
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
           "Common.TypeName": "kouluilm.Shared.SurveyPrompt",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
-        "HashCode": 1106139583,
-        "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Index",
-        "AssemblyName": "kouluilm",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Index"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Index"
-        }
-      },
-      {
-        "HashCode": -2078733842,
-        "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Index",
-        "AssemblyName": "kouluilm",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "kouluilm.Pages.Index"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Index",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
-        "HashCode": -868316686,
-        "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Hallinta",
-        "AssemblyName": "kouluilm",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "Hallinta"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Hallinta"
-        }
-      },
-      {
-        "HashCode": 1272873693,
-        "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Hallinta",
-        "AssemblyName": "kouluilm",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "kouluilm.Pages.Hallinta"
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Hallinta",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },

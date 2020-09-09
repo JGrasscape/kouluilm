@@ -57,10 +57,99 @@ else
                 <label for="piilotettu">Piilotettu:</label>                
                 <InputCheckbox id="piilotettu" class="form-control" @bind-Value="@koulutus.Piilotettu"></InputCheckbox>
             </div>
-            <div class="text-right">
-                <button type="submit" class="btn btn-primary">Tallenna</button>
+            <div class="form-group">                
+                <button type="submit" class="btn btn-primary">Tallenna</button>                
+                @tallennusMessu
             </div>
         </EditForm>
+        <div class="form-group">
+            <button class="btn btn-primary" @onclick="@PoistoNayta">Poista</button>
+            @poistoMessu
+        </div>
+    </div>
+}
+
+<div class="form-group">
+    <button class="btn btn-primary" @onclick="@UusiNayta">Uusi</button>
+</div>
+
+@if (naytaPoisto)
+{
+    <div class="modal fade show" id="poistoModal" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Varmistus!</h4>
+                    <button type="button" class="close" @onclick="@PoistoPeruuta">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Haluatko varmasti poistaa koulutuskokonaisuuden?</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" @onclick="@PoistoPeruuta">Peruuta</button>
+                    <button type="button" class="btn btn-danger" @onclick="@PoistoOk">Poista</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (naytaUusi)
+{
+    <div class="modal fade show" id="uusiModal" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Uusi koulutus</h4>
+                    <button type="button" class="close" @onclick="@UusiPeruuta">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <EditForm Model="@uusiKoulutus" OnValidSubmit="uusi">
+                            <DataAnnotationsValidator />
+                            <div class="form-group">
+                                <label for="nimi">Nimi:</label>
+                                <InputText id="nimi" class="form-control" @bind-Value="@uusiKoulutus.Nimi"></InputText>
+                            </div>
+                            <div class="form-group">
+                                <label for="selite">Selite:</label>
+                                <InputTextArea id="selite" class="form-control" @bind-Value="@uusiKoulutus.Selite"></InputTextArea>
+                            </div>
+                            <div class="form-group">
+                                <label for="asiasanat">Asiasanat:</label>
+                                <InputText id="asiasanat" class="form-control" @bind-Value="@uusiKoulutus.Asiasanat"></InputText>   
+                            </div>
+                            <div class="form-group">
+                                <label for="kieltosanat">Kieltosanat:</label>
+                                <InputText id="kieltosanat" class="form-control" @bind-Value="@uusiKoulutus.Kieltosanat"></InputText>          
+                            </div>
+                            <div class="form-group">
+                                <label for="alkupvm">Alkupvm:</label>
+                                <InputDate id="alkupvm" class="form-control" @bind-Value="@uusiKoulutus.Alkupvm"></InputDate>
+                            </div>
+                            <div class="form-group">
+                                <label for="loppuvpm">Loppupvm:</label>
+                                <InputDate id="loppuvpm" class="form-control" @bind-Value="@uusiKoulutus.Loppupvm"></InputDate>
+                            </div>
+                            <div class="form-group">
+                                <label for="piilotettu">Piilotettu:</label>                
+                                <InputCheckbox id="piilotettu" class="form-control" @bind-Value="@uusiKoulutus.Piilotettu"></InputCheckbox>
+                            </div>
+                            <div class="text-right">                
+                                <button type="submit" class="btn btn-primary">Tallenna</button>
+                            </div>
+                        </EditForm>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn" @onclick="@UusiPeruuta">Peruuta</button>
+                </div>
+            </div>
+        </div>
     </div>
 }
 
@@ -68,9 +157,12 @@ else
     <p>&copy; EPSHP</p>
 </footer>
 
-@code {
+@code {    
     private Koulutus koulutus = new Koulutus();
+    private Koulutus uusiKoulutus = new Koulutus();
     private List<Koulutus> koulutukset;
+    private string tallennusMessu, poistoMessu;
+    bool naytaPoisto = false, naytaUusi = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -86,14 +178,35 @@ else
         // Valitaan kyseinen koulutus-olio listalta
         koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
 
+        tallennusMessu = "";
+        poistoMessu = "";
         //return Task.CompletedTask;
     }
 
     private void tallenna()
     {
-        //Console.WriteLine("Tallenna:");
-        //Console.WriteLine(koulutus.Nimi);
         KoulutusService.UpdateKoulutusAsync(koulutus);
-        //return Task.CompletedTask;
+        tallennusMessu = "Tallennus onnistui!";
+    }
+
+    void PoistoNayta() => naytaPoisto = true;
+    void PoistoPeruuta() => naytaPoisto = false;
+    async Task PoistoOk()
+    {
+        KoulutusService.DeleteKoulutusAsync(koulutus);
+        naytaPoisto = false;
+        poistoMessu = "Poisto onnistui!";        
+        
+        // Haetaan koulutuspohjat
+        koulutukset = await KoulutusService.GetKoulutusAsync("IN (0, 1)");  
+        koulutus = new Koulutus();
+    }
+
+    void UusiNayta() => naytaUusi = true;
+    void UusiPeruuta() => naytaUusi = false;
+    private void uusi()
+    {   
+        // TODO: Kutsu tallennus-serviceä
+        Console.WriteLine("UUSI TALLENNUS");
     }
 }
