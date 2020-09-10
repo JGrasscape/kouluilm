@@ -49,7 +49,7 @@ else
                     // Valitaan varaukseen kuuluva resurssi
                     resurssi = resurssit.Single(r => r.Resurssi_ID == varaus.Resurssi_ID);
                     
-                    <tr @onclick="@(() => naytaOsallistujatFunc(varaus.Varaus_ID))">
+                    <tr @onclick="@(() => naytaOsallistujatFunc(varaus.Varaus_ID, @varaus.Osallistujat, @resurssi.Paikkalkm))">
                         <td>@varaus.Varauspvm.ToShortDateString()</td>
                         <td>@varaus.Kloalku - @varaus.Kloloppu</td>
                         <td>@resurssi.Nimi</td>
@@ -109,26 +109,188 @@ else
     </div>
 }
 
+@if (naytaOsallistujatModal)
+{
+    <div class="modal fade show" id="osallistujatModal" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Osallistujat</h4>
+                    <button type="button" class="close" @onclick="@OsallistujatPeruuta">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Paikka</th>
+                                <th>Osallistuja</th>
+                                <th>Yksikkö</th>
+                                <th>Puh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{                                        
+                                bool found = false;
+                            }                                    
+                            @for (int i = 1; i <= resurssi.Paikkalkm; i++)
+                            {
+                                found = false;                                        
+                                @foreach (var ilm in ilmoittautumiset) // Osallistujat läpi
+                                {                                            
+                                    if (i == ilm.Paikka)
+                                    {
+                                        <tr>
+                                            <td>@ilm.Paikka</td>
+                                            <td>@ilm.Nimi</td>
+                                            <td>@ilm.Yksikko</td>
+                                            <td>@ilm.Puh</td>
+                                        </tr>
+                                        found = true;
+                                        break;
+                                    }                                           
+                                }
+                                if (!found)
+                                {
+                                    <tr>
+                                        <td>@i</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="@OsallistujatPeruuta">Sulje</button>
+                    <button type="button" class="btn btn-success" disabled="@ilmoittauduDisabled" @onclick="@Ilmoittaudu">Ilmoittaudu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (naytaKaavake)
+{
+    <div class="modal fade show" id="kaavakeModal" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Osallistujan tiedot</h4>
+                    <button type="button" class="close" @onclick="@KaavakePeruuta">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <EditForm Model="@ilmo">
+                            <div class="form-group">
+                                <label for="nimi">Nimi:</label>
+                                <InputText id="nimi" class="form-control" @bind-Value="@ilmo.Nimi"></InputText>
+                            </div>
+                            <div class="form-group">
+                                <label for="yksikko">Yksikkö:</label>
+                                <InputText id="yksikko" class="form-control" @bind-Value="@ilmo.Yksikko"></InputText>
+                            </div> 
+                            <div class="form-group">
+                                <label for="puh">Puh:</label>
+                                <InputText id="puh" class="form-control" @bind-Value="@ilmo.Puh"></InputText>
+                            </div>                         
+                        </EditForm>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="@KaavakePeruuta">Sulje</button>
+                    @ilmoMessu
+                    <button type="button" class="btn btn-success" @onclick="@KaavakeOK">Ilmoittaudu</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <footer>
     <p>&copy; EPSHP</p>
 </footer>
 
 @code {
+    // TODO:
+    // Ilmoittautuminen
+    // Ilmoittautumisen poisto
+    // Näytä menneet koulutukset
     private Koulutus koulutus = new Koulutus();
     private List<Koulutus> koulutukset;
     private Resurssi resurssi = new Resurssi();
     private List<Resurssi> resurssit;
     private List<Varaus> varaukset;
     private List<Ilmoittautuminen> ilmoittautumiset;
-    private string selite = "";
-    private bool naytaOsallistujat = false;
+    private Ilmoittautuminen ilmo = new Ilmoittautuminen();
+    private string selite = "", ilmoMessu = "";
+    private bool naytaOsallistujat = false, naytaOsallistujatModal = false, ilmoittauduDisabled = false, naytaKaavake = false;
+    //private int valittuVaraus = 0;
 
-    private async void naytaOsallistujatFunc(int varaus_id)
+    private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm, int paikkaLkm)
     {          
         // Haetaan ilmoittautujat   
         ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(varaus_id);
 
-        naytaOsallistujat = !naytaOsallistujat;
+        // Mahtuuko mukaan?
+        if (osallistujaLkm < paikkaLkm)
+        {
+            ilmoittauduDisabled = false;
+        }
+        else
+        {
+            ilmoittauduDisabled = true;
+        }
+
+        // Taulukko osallistujista
+        //naytaOsallistujat = !naytaOsallistujat;
+
+        // Modal osallistujista
+        naytaOsallistujatModal = true;
+        //valittuVaraus = varaus_id;
+        ilmo.Linkki_Varaus_ID = varaus_id;
+    }
+
+    void OsallistujatPeruuta() => naytaOsallistujatModal = false;
+    void Ilmoittaudu() => naytaKaavake = true;
+
+    void KaavakePeruuta()
+    {
+        naytaKaavake = false;
+        ilmoMessu = "";
+        ilmo = new Ilmoittautuminen();
+    }
+    async Task KaavakeOK()
+    {
+        // Tarkastetaan syötetyt kentät
+        if (string.IsNullOrWhiteSpace(ilmo.Nimi))
+        {            
+            ilmoMessu = "Anna ilmoittautujan nimi!";
+            return;
+        }
+        else if (string.IsNullOrWhiteSpace(ilmo.Yksikko))
+        {            
+            ilmoMessu = "Anna ilmoittautujan yksikkö!";
+            return;
+        }
+        else if (string.IsNullOrWhiteSpace(ilmo.Puh))
+        {            
+            ilmoMessu = "Anna ilmoittautujan puhnro!";
+            return;
+        }        
+
+        IlmoittautuminenService.InsertOsallistujaAsync(ilmo);
+
+        // Piilotetaan dialogi ja haetaan ilmoittautumiset        
+        ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(ilmo.Linkki_Varaus_ID);
+        ilmoMessu = "";
+        ilmo = new Ilmoittautuminen();
+        naytaKaavake = false;
     }
 
     protected override async Task OnInitializedAsync()

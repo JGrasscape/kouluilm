@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
+using System;
 
 namespace kouluilm.Data
 {
@@ -81,6 +82,36 @@ namespace kouluilm.Data
 
             Task<List<Ilmoittautuminen>> task = Task.FromResult(ilmoittautumiset);
             return task;
+        }
+
+        public void InsertOsallistujaAsync(Ilmoittautuminen ilmo)
+        {
+            // DEBUG
+            Console.WriteLine(ilmo.Linkki_Varaus_ID.ToString());
+
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var insertCommand = connection.CreateCommand();
+                    //int piilotettu = (koulutus.Piilotettu) ? 1 : 0;
+                    //string alkupvm = koulutus.Alkupvm.ToString("yyyy-MM-dd");
+                    //string loppupvm = koulutus.Loppupvm.ToString("yyyy-MM-dd");
+                    int linkki_varaus_id = ilmo.Linkki_Varaus_ID;
+                    // TODO JATKA
+                    
+                    //insertCommand.CommandText = "INSERT INTO koulutus_koulutukset (nimi, asiasanat, alkupvm, loppupvm, selite, kieltosanat, piilotettu) VALUES ('" + koulutus.Nimi + "', '" + koulutus.Asiasanat + "', '" + alkupvm + "', '" + loppupvm + "', '" + koulutus.Selite + "', '" + koulutus.Kieltosanat + "', " + piilotettu + ")";
+                    //insertCommand.ExecuteNonQuery();
+                    //transaction.Commit();
+                }
+            }
         }
     }
 }
