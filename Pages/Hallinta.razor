@@ -58,8 +58,9 @@ else
                 <InputCheckbox id="piilotettu" class="form-control" @bind-Value="@koulutus.Piilotettu"></InputCheckbox>
             </div>
             <div class="form-group">                
+                <p class="text-success">
                 <button type="submit" class="btn btn-primary">Tallenna</button>                
-                @tallennusMessu
+                @tallennusMessu</p>
             </div>
         </EditForm>
         <div class="form-group">
@@ -138,8 +139,10 @@ else
                                 <label for="piilotettu">Piilotettu:</label>                
                                 <InputCheckbox id="piilotettu" class="form-control" @bind-Value="@uusiKoulutus.Piilotettu"></InputCheckbox>
                             </div>
-                            <div class="text-right">                
+                            <div class="text-right">  
+                                <p class="text-danger">@uusiMessu
                                 <button type="submit" class="btn btn-primary">Tallenna</button>
+                                </p>
                             </div>
                         </EditForm>
                     </div>
@@ -161,7 +164,7 @@ else
     private Koulutus koulutus = new Koulutus();
     private Koulutus uusiKoulutus = new Koulutus();
     private List<Koulutus> koulutukset;
-    private string tallennusMessu, poistoMessu;
+    private string tallennusMessu, poistoMessu, uusiMessu;
     bool naytaPoisto = false, naytaUusi = false;
 
     protected override async Task OnInitializedAsync()
@@ -202,11 +205,29 @@ else
         koulutus = new Koulutus();
     }
 
-    void UusiNayta() => naytaUusi = true;
+    void UusiNayta()
+    {
+        naytaUusi = true;
+        uusiMessu = "";
+    }
     void UusiPeruuta() => naytaUusi = false;
-    private void uusi()
-    {   
-        // TODO: Kutsu tallennus-serviceä
-        Console.WriteLine("UUSI TALLENNUS");
+    async Task uusi()
+    {
+        // Tarkistetaan että nimi on annettu
+        if (string.IsNullOrWhiteSpace(uusiKoulutus.Nimi))
+        {            
+            uusiMessu = "Anna koulutukselle nimi!";
+            return;
+        }
+
+        uusiMessu = "";
+
+        KoulutusService.InsertKoulutusAsync(uusiKoulutus);
+
+        // Piilotetaan dialogi ja haetaan koulutukset
+        naytaUusi = false;
+        koulutukset = await KoulutusService.GetKoulutusAsync("IN (0, 1)");  
+        koulutus = new Koulutus();
+        uusiKoulutus = new Koulutus();
     }
 }

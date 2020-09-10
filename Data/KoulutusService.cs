@@ -86,10 +86,35 @@ namespace kouluilm.Data
 
                 using (var transaction = connection.BeginTransaction())
                 {
-                    var updateCommand = connection.CreateCommand();
+                    var deleteCommand = connection.CreateCommand();
                     
-                    updateCommand.CommandText = "DELETE FROM koulutus_koulutukset WHERE koulutus_id=" + koulutus.Koulutus_ID;
-                    updateCommand.ExecuteNonQuery();
+                    deleteCommand.CommandText = "DELETE FROM koulutus_koulutukset WHERE koulutus_id=" + koulutus.Koulutus_ID;
+                    deleteCommand.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+            }
+        } 
+
+        public void InsertKoulutusAsync(Koulutus koulutus)
+        {
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var insertCommand = connection.CreateCommand();
+                    int piilotettu = (koulutus.Piilotettu) ? 1 : 0;
+                    string alkupvm = koulutus.Alkupvm.ToString("yyyy-MM-dd");
+                    string loppupvm = koulutus.Loppupvm.ToString("yyyy-MM-dd");
+                    
+                    insertCommand.CommandText = "INSERT INTO koulutus_koulutukset (nimi, asiasanat, alkupvm, loppupvm, selite, kieltosanat, piilotettu) VALUES ('" + koulutus.Nimi + "', '" + koulutus.Asiasanat + "', '" + alkupvm + "', '" + loppupvm + "', '" + koulutus.Selite + "', '" + koulutus.Kieltosanat + "', " + piilotettu + ")";
+                    insertCommand.ExecuteNonQuery();
                     transaction.Commit();
                 }
             }

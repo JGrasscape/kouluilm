@@ -12,35 +12,35 @@
   "ProjectWorkspaceState": {
     "TagHelpers": [
       {
-        "HashCode": -868316686,
+        "HashCode": -1311118628,
         "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Hallinta",
+        "Name": "kouluilm.App",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "Hallinta"
+            "TagName": "App"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Hallinta"
+          "Common.TypeName": "kouluilm.App"
         }
       },
       {
-        "HashCode": 1272873693,
+        "HashCode": -1244042259,
         "Kind": "Components.Component",
-        "Name": "kouluilm.Pages.Hallinta",
+        "Name": "kouluilm.App",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "kouluilm.Pages.Hallinta"
+            "TagName": "kouluilm.App"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Pages.Hallinta",
+          "Common.TypeName": "kouluilm.App",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
@@ -78,35 +78,35 @@
         }
       },
       {
-        "HashCode": -1311118628,
+        "HashCode": -868316686,
         "Kind": "Components.Component",
-        "Name": "kouluilm.App",
+        "Name": "kouluilm.Pages.Hallinta",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "App"
+            "TagName": "Hallinta"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.App"
+          "Common.TypeName": "kouluilm.Pages.Hallinta"
         }
       },
       {
-        "HashCode": -1244042259,
+        "HashCode": 1272873693,
         "Kind": "Components.Component",
-        "Name": "kouluilm.App",
+        "Name": "kouluilm.Pages.Hallinta",
         "AssemblyName": "kouluilm",
         "CaseSensitive": true,
         "TagMatchingRules": [
           {
-            "TagName": "kouluilm.App"
+            "TagName": "kouluilm.Pages.Hallinta"
           }
         ],
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.App",
+          "Common.TypeName": "kouluilm.Pages.Hallinta",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
