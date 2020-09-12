@@ -84,10 +84,17 @@ namespace kouluilm.Data
             return task;
         }
 
-        public void InsertOsallistujaAsync(Ilmoittautuminen ilmo)
+        public bool InsertOsallistujaAsync(Ilmoittautuminen ilmo)
         {
             // DEBUG
-            Console.WriteLine(ilmo.Linkki_Varaus_ID.ToString());
+            Console.WriteLine("Linkki: " + ilmo.Linkki_Varaus_ID.ToString());
+            Console.WriteLine("Koulutus: " + ilmo.Koulutus_ID.ToString());
+            Console.WriteLine("User: " + ilmo.Varaaja);
+
+            int linkki_varaus_id = ilmo.Linkki_Varaus_ID;
+            int koulutus_id = ilmo.Koulutus_ID;
+            string varaattupvm = DateTime.Today.ToString("yyyy-MM-dd");
+            int paikka = 1;
 
             // SQLite-kannan tiedot
             var connectionStringBuilder = new SqliteConnectionStringBuilder();
@@ -98,18 +105,35 @@ namespace kouluilm.Data
             {
                 connection.Open();
 
+                // Selvitetään vapaa paikka
+                var sql = connection.CreateCommand();
+                sql.CommandText = "SELECT paikka FROM koulutus_ilmoittautumiset WHERE linkki_varaus_id=" + linkki_varaus_id + " ORDER BY paikka";
+                
+                using(var reader = sql.ExecuteReader())
+                {
+                    while(reader.Read())
+                    {
+                        if (paikka == reader.GetInt32(0))
+                            paikka++;                            
+                        else
+                            break;
+
+                        if (paikka > ilmo.PaikkaLkm)
+                            return false;
+                    }                  
+                }
+
+                Console.WriteLine("Vapaa paikka: " + paikka.ToString());
+
                 using (var transaction = connection.BeginTransaction())
                 {
                     var insertCommand = connection.CreateCommand();
-                    //int piilotettu = (koulutus.Piilotettu) ? 1 : 0;
-                    //string alkupvm = koulutus.Alkupvm.ToString("yyyy-MM-dd");
-                    //string loppupvm = koulutus.Loppupvm.ToString("yyyy-MM-dd");
-                    int linkki_varaus_id = ilmo.Linkki_Varaus_ID;
-                    // TODO JATKA
                     
-                    //insertCommand.CommandText = "INSERT INTO koulutus_koulutukset (nimi, asiasanat, alkupvm, loppupvm, selite, kieltosanat, piilotettu) VALUES ('" + koulutus.Nimi + "', '" + koulutus.Asiasanat + "', '" + alkupvm + "', '" + loppupvm + "', '" + koulutus.Selite + "', '" + koulutus.Kieltosanat + "', " + piilotettu + ")";
-                    //insertCommand.ExecuteNonQuery();
-                    //transaction.Commit();
+                    insertCommand.CommandText = "INSERT INTO koulutus_ilmoittautumiset (linkki_varaus_id, koulutus_id, paikka, varaaja, varattupvm, nimi, yksikko, puh) VALUES (" + linkki_varaus_id + ", " + koulutus_id + ", " + paikka + ", '" + ilmo.Varaaja + "', '" + varaattupvm + "', '" + ilmo.Nimi + "', '" + ilmo.Yksikko + "', '" + ilmo.Puh + "')";
+                    
+                    insertCommand.ExecuteNonQuery();
+                    transaction.Commit();
+                    return true;
                 }
             }
         }

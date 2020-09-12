@@ -5,6 +5,11 @@
 @inject VarausService VarausService
 @inject IlmoittautuminenService IlmoittautuminenService
 
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 <head>
     <h1>EPSHP - Koulutuksiin ilmoittautuminen</h1>
 </head>
@@ -67,7 +72,6 @@ else
                                     <tr>
                                         <th>Paikka</th>
                                         <th>Osallistuja</th>
-                                        <th><button id="varaa">Varaa</button></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -84,7 +88,6 @@ else
                                                 <tr>
                                                     <td>@ilm.Paikka</td>
                                                     <td>@ilm.Nimi</td>
-                                                    <td></td>
                                                 </tr>
                                                 found = true;
                                                 break;
@@ -95,12 +98,12 @@ else
                                             <tr>
                                                 <td>@i</td>
                                                 <td></td>
-                                                <td></td>
                                             </tr>
                                         }
                                     }
                                 </tbody>
                             </table>
+                            <button type="button" class="btn btn-success" disabled="@ilmoittauduDisabled" @onclick="@Ilmoittaudu">Ilmoittaudu</button>
                         }                        
                     }                    
                 }                
@@ -213,14 +216,22 @@ else
 }
 
 <footer>
+    <p>User: @user</p>
     <p>&copy; EPSHP</p>
 </footer>
 
 @code {
     // TODO:
     // Ilmoittautuminen
+    // - modal: miksi antaa liikaa jos on käynyt toisessa koulutuksessa?
+    // - ilmoittautumis-nappi ei deaktivoidu jos tulee täyteen
+    // - modal tai table?
+    // - table antaa ilmoittautua liikaa
     // Ilmoittautumisen poisto
+    // - hae omat koulutukset erilliseen listaan?
     // Näytä menneet koulutukset
+    // Siivoa TODOt
+    // Siivoa DEBUGit
     private Koulutus koulutus = new Koulutus();
     private List<Koulutus> koulutukset;
     private Resurssi resurssi = new Resurssi();
@@ -228,12 +239,15 @@ else
     private List<Varaus> varaukset;
     private List<Ilmoittautuminen> ilmoittautumiset;
     private Ilmoittautuminen ilmo = new Ilmoittautuminen();
-    private string selite = "", ilmoMessu = "";
+    private string selite = "", ilmoMessu = "", user = "";
     private bool naytaOsallistujat = false, naytaOsallistujatModal = false, ilmoittauduDisabled = false, naytaKaavake = false;
     //private int valittuVaraus = 0;
 
     private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm, int paikkaLkm)
     {          
+        // DEBUG
+        Console.WriteLine("Paikkalkm: {0}", paikkaLkm);
+
         // Haetaan ilmoittautujat   
         ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(varaus_id);
 
@@ -248,12 +262,14 @@ else
         }
 
         // Taulukko osallistujista
-        //naytaOsallistujat = !naytaOsallistujat;
+        naytaOsallistujat = !naytaOsallistujat;
 
         // Modal osallistujista
-        naytaOsallistujatModal = true;
+        //naytaOsallistujatModal = true;
+        
         //valittuVaraus = varaus_id;
         ilmo.Linkki_Varaus_ID = varaus_id;
+        ilmo.PaikkaLkm = paikkaLkm;
     }
 
     void OsallistujatPeruuta() => naytaOsallistujatModal = false;
@@ -263,7 +279,9 @@ else
     {
         naytaKaavake = false;
         ilmoMessu = "";
-        ilmo = new Ilmoittautuminen();
+        ilmo.Nimi = string.Empty;
+        ilmo.Yksikko = string.Empty;
+        ilmo.Puh = string.Empty;
     }
     async Task KaavakeOK()
     {
@@ -284,22 +302,39 @@ else
             return;
         }        
 
-        IlmoittautuminenService.InsertOsallistujaAsync(ilmo);
+        ilmo.Varaaja = httpContextAccessor.HttpContext.User.Identity.Name;
+        if (IlmoittautuminenService.InsertOsallistujaAsync(ilmo))
+        {
+            Console.WriteLine("Varaus onnistui!");
 
-        // Piilotetaan dialogi ja haetaan ilmoittautumiset        
-        ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(ilmo.Linkki_Varaus_ID);
-        ilmoMessu = "";
-        ilmo = new Ilmoittautuminen();
-        naytaKaavake = false;
+            // Piilotetaan dialogi ja haetaan ilmoittautumiset        
+            ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(ilmo.Linkki_Varaus_ID);
+            ilmoMessu = "";
+            ilmo.Nimi = string.Empty;
+            ilmo.Yksikko = string.Empty;
+            ilmo.Puh = string.Empty;
+            naytaKaavake = false;
+
+            // Päivitä alla oleva osallistujamäärä
+            await koulutusMuutos(ilmo.Koulutus_ID.ToString());
+        }
+        else
+        {
+            Console.WriteLine("Varaus ei onnistunut!");
+            ilmoMessu = "Varaus ei onnistunut!";
+        }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        // Haetaan koulutukset ja resurssit
-        // TODO: Hae vain tulevat
-        // TODO: Oma metodi myös menneille koulutuksille
+        // Haetaan tulevat koulutukset ja resurssit
         koulutukset = await KoulutusService.GetKoulutusAsync("=0");
         resurssit = await ResurssiService.GetResurssiAsync();
+        
+        // Käyttäjän tiedot
+        user = httpContextAccessor.HttpContext.User.Identity.Name;
+        //var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        //user = authState.User.Identity.Name;
     }
 
     private async Task koulutusMuutos(string value)
@@ -307,6 +342,7 @@ else
         // Valitaan kyseinen koulutus-olio listalta
         koulutus = koulutukset.Single(k => k.Koulutus_ID == value);
         selite = koulutus.Selite;
+        ilmo.Koulutus_ID = int.Parse(value);  // Koulutus ID talteen ilmoittautumis-oliolle
 
         // Haetaan tilavaraukset asiasanojen mukaisesti valitulle koulutukselle
         // Pilkotaan ensin asia- ja kieltosanat

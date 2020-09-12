@@ -15,5 +15,6 @@ namespace kouluilm.Data
         public string Puh { get; set; }
         public bool Koulutus_OK { get; set; }
         public bool EHRM_OK { get; set; }
+        public int PaikkaLkm { get; set; } // Otetaan talteen ilmoittautumista varten paikkalkm
     }
 }
