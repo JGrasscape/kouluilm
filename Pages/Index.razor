@@ -54,7 +54,7 @@ else
                     // Valitaan varaukseen kuuluva resurssi
                     resurssi = resurssit.Single(r => r.Resurssi_ID == varaus.Resurssi_ID);
                     
-                    <tr @onclick="@(() => naytaOsallistujatFunc(varaus.Varaus_ID, @varaus.Osallistujat, @resurssi.Paikkalkm))">
+                    <tr @onclick="@(() => naytaOsallistujatFunc(varaus.Varaus_ID, varaus.Osallistujat))">
                         <td>@varaus.Varauspvm.ToShortDateString()</td>
                         <td>@varaus.Kloalku - @varaus.Kloloppu</td>
                         <td>@resurssi.Nimi</td>
@@ -63,7 +63,8 @@ else
 
                     // Näytetäänkö osallistujat
                     if (@naytaOsallistujat)
-                    {                                               
+                    {
+                        // TABLE                                               
                         // Näytetään vain valitun varauksen osallistujat
                         if (ilmoittautumiset[0].Linkki_Varaus_ID == varaus.Varaus_ID)
                         {
@@ -77,6 +78,7 @@ else
                                 <tbody>
                                     @{                                        
                                         bool found = false;
+                                        Console.WriteLine("Table, paikkalm: " + resurssi.Paikkalkm.ToString());
                                     }                                    
                                     @for (int i = 1; i <= resurssi.Paikkalkm; i++)
                                     {
@@ -104,7 +106,7 @@ else
                                 </tbody>
                             </table>
                             <button type="button" class="btn btn-success" disabled="@ilmoittauduDisabled" @onclick="@Ilmoittaudu">Ilmoittaudu</button>
-                        }                        
+                        }                     
                     }                    
                 }                
             </tbody>
@@ -136,7 +138,7 @@ else
                             @{                                        
                                 bool found = false;
                             }                                    
-                            @for (int i = 1; i <= resurssi.Paikkalkm; i++)
+                            @for (int i = 1; i <= ilmo.PaikkaLkm; i++)
                             {
                                 found = false;                                        
                                 @foreach (var ilm in ilmoittautumiset) // Osallistujat läpi
@@ -222,11 +224,6 @@ else
 
 @code {
     // TODO:
-    // Ilmoittautuminen
-    // - modal: miksi antaa liikaa jos on käynyt toisessa koulutuksessa?
-    // - ilmoittautumis-nappi ei deaktivoidu jos tulee täyteen
-    // - modal tai table?
-    // - table antaa ilmoittautua liikaa
     // Ilmoittautumisen poisto
     // - hae omat koulutukset erilliseen listaan?
     // Näytä menneet koulutukset
@@ -241,18 +238,23 @@ else
     private Ilmoittautuminen ilmo = new Ilmoittautuminen();
     private string selite = "", ilmoMessu = "", user = "";
     private bool naytaOsallistujat = false, naytaOsallistujatModal = false, ilmoittauduDisabled = false, naytaKaavake = false;
-    //private int valittuVaraus = 0;
 
-    private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm, int paikkaLkm)
-    {          
-        // DEBUG
-        Console.WriteLine("Paikkalkm: {0}", paikkaLkm);
-
+    private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm)
+    {   
         // Haetaan ilmoittautujat   
         ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(varaus_id);
 
+        // Haetaan varaukselle paikkalkm
+        int resurssi_id = await VarausService.GetResurssiFromVarausAsync(varaus_id);
+        Resurssi r = await ResurssiService.GetResurssiByIDAsync(resurssi_id);
+        ilmo.PaikkaLkm = r.Paikkalkm;
+        ilmo.OsallistujaLkm = osallistujaLkm;
+
+        // DEBUG
+        Console.WriteLine("naytaOsallistujatFunc ilmo.paikkalkm: {0}", ilmo.PaikkaLkm);
+
         // Mahtuuko mukaan?
-        if (osallistujaLkm < paikkaLkm)
+        if (ilmo.OsallistujaLkm < ilmo.PaikkaLkm)
         {
             ilmoittauduDisabled = false;
         }
@@ -262,14 +264,12 @@ else
         }
 
         // Taulukko osallistujista
-        naytaOsallistujat = !naytaOsallistujat;
+        //naytaOsallistujat = !naytaOsallistujat;
 
         // Modal osallistujista
-        //naytaOsallistujatModal = true;
+        naytaOsallistujatModal = true;
         
-        //valittuVaraus = varaus_id;
         ilmo.Linkki_Varaus_ID = varaus_id;
-        ilmo.PaikkaLkm = paikkaLkm;
     }
 
     void OsallistujatPeruuta() => naytaOsallistujatModal = false;
@@ -314,9 +314,20 @@ else
             ilmo.Yksikko = string.Empty;
             ilmo.Puh = string.Empty;
             naytaKaavake = false;
+            ilmo.OsallistujaLkm++;
 
             // Päivitä alla oleva osallistujamäärä
             await koulutusMuutos(ilmo.Koulutus_ID.ToString());
+
+            // Mahtuuko mukaan?
+            if (ilmo.OsallistujaLkm < ilmo.PaikkaLkm)
+            {
+                ilmoittauduDisabled = false;
+            }
+            else
+            {
+                ilmoittauduDisabled = true;
+            }
         }
         else
         {

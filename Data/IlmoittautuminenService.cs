@@ -24,14 +24,15 @@ namespace kouluilm.Data
                 var sql = connection.CreateCommand();
                 sql.CommandText = "SELECT COUNT(varaus_id) FROM koulutus_ilmoittautumiset WHERE linkki_varaus_id=" + linkki_varaus_id;
 
-                //osallistujat = (int)sql.ExecuteScalar();
-                using(var reader = sql.ExecuteReader())
+                osallistujat = int.Parse(sql.ExecuteScalar().ToString());
+                
+                /*using(var reader = sql.ExecuteReader())
                 {
                     while(reader.Read())
                     {
                         osallistujat = reader.GetInt32(0);
                     }
-                }
+                }*/
             }
 
             Task<int> task = Task.FromResult(osallistujat);
@@ -86,11 +87,6 @@ namespace kouluilm.Data
 
         public bool InsertOsallistujaAsync(Ilmoittautuminen ilmo)
         {
-            // DEBUG
-            Console.WriteLine("Linkki: " + ilmo.Linkki_Varaus_ID.ToString());
-            Console.WriteLine("Koulutus: " + ilmo.Koulutus_ID.ToString());
-            Console.WriteLine("User: " + ilmo.Varaaja);
-
             int linkki_varaus_id = ilmo.Linkki_Varaus_ID;
             int koulutus_id = ilmo.Koulutus_ID;
             string varaattupvm = DateTime.Today.ToString("yyyy-MM-dd");
@@ -122,8 +118,6 @@ namespace kouluilm.Data
                             return false;
                     }                  
                 }
-
-                Console.WriteLine("Vapaa paikka: " + paikka.ToString());
 
                 using (var transaction = connection.BeginTransaction())
                 {

@@ -48,5 +48,28 @@ namespace kouluilm.Data
             Task<List<Varaus>> task = Task.FromResult(varaukset);
             return task;
         }
+
+        public Task<int> GetResurssiFromVarausAsync(int varaus_id)
+        {
+            int resurssi_id = 0;
+
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                var sql = connection.CreateCommand();
+                sql.CommandText = "SELECT resurssi_id FROM varaukset WHERE varaus_id=" + varaus_id;
+
+                resurssi_id = int.Parse(sql.ExecuteScalar().ToString());
+            }
+
+            Task<int> task = Task.FromResult(resurssi_id);
+            return task;
+        }
     }
 }

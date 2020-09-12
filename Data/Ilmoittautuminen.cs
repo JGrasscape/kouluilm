@@ -16,5 +16,6 @@ namespace kouluilm.Data
         public bool Koulutus_OK { get; set; }
         public bool EHRM_OK { get; set; }
         public int PaikkaLkm { get; set; } // Otetaan talteen ilmoittautumista varten paikkalkm
+        public int OsallistujaLkm { get; set; } // Otetaan talteen ilmoittautuneiden määrä
     }
 }
