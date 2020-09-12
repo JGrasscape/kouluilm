@@ -111,6 +111,59 @@
         }
       },
       {
+        "HashCode": -1978509512,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Shared.SurveyPrompt",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "SurveyPrompt"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "Title",
+            "TypeName": "System.String",
+            "Metadata": {
+              "Common.PropertyName": "Title"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Shared.SurveyPrompt"
+        }
+      },
+      {
+        "HashCode": 1383339829,
+        "Kind": "Components.Component",
+        "Name": "kouluilm.Shared.SurveyPrompt",
+        "AssemblyName": "kouluilm",
+        "CaseSensitive": true,
+        "TagMatchingRules": [
+          {
+            "TagName": "kouluilm.Shared.SurveyPrompt"
+          }
+        ],
+        "BoundAttributes": [
+          {
+            "Kind": "Components.Component",
+            "Name": "Title",
+            "TypeName": "System.String",
+            "Metadata": {
+              "Common.PropertyName": "Title"
+            }
+          }
+        ],
+        "Metadata": {
+          "Runtime.Name": "Components.IComponent",
+          "Common.TypeName": "kouluilm.Shared.SurveyPrompt",
+          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
+        }
+      },
+      {
         "HashCode": 1857743586,
         "Kind": "Components.Component",
         "Name": "kouluilm.Shared.MainLayout",
@@ -236,59 +289,6 @@
         "Metadata": {
           "Runtime.Name": "Components.IComponent",
           "Common.TypeName": "kouluilm.Shared.NavMenu",
-          "Components.NameMatch": "Components.FullyQualifiedNameMatch"
-        }
-      },
-      {
-        "HashCode": -1978509512,
-        "Kind": "Components.Component",
-        "Name": "kouluilm.Shared.SurveyPrompt",
-        "AssemblyName": "kouluilm",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "SurveyPrompt"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "Title",
-            "TypeName": "System.String",
-            "Metadata": {
-              "Common.PropertyName": "Title"
-            }
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Shared.SurveyPrompt"
-        }
-      },
-      {
-        "HashCode": 1383339829,
-        "Kind": "Components.Component",
-        "Name": "kouluilm.Shared.SurveyPrompt",
-        "AssemblyName": "kouluilm",
-        "CaseSensitive": true,
-        "TagMatchingRules": [
-          {
-            "TagName": "kouluilm.Shared.SurveyPrompt"
-          }
-        ],
-        "BoundAttributes": [
-          {
-            "Kind": "Components.Component",
-            "Name": "Title",
-            "TypeName": "System.String",
-            "Metadata": {
-              "Common.PropertyName": "Title"
-            }
-          }
-        ],
-        "Metadata": {
-          "Runtime.Name": "Components.IComponent",
-          "Common.TypeName": "kouluilm.Shared.SurveyPrompt",
           "Components.NameMatch": "Components.FullyQualifiedNameMatch"
         }
       },
