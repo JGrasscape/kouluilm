@@ -33,6 +33,7 @@ namespace kouluilm
             services.AddSingleton<ResurssiService>();
             services.AddSingleton<VarausService>();
             services.AddSingleton<IlmoittautuminenService>();
+            services.AddSingleton<IlmoSearchService>();
 
             services.AddHttpContextAccessor();
         }

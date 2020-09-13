@@ -1,0 +1,98 @@
+@page "/hae"
+
+@inject IlmoSearchService IlmoSearchService;
+
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+
+<head>
+    <h1>Omat ilmoittautumisesi</h1>
+</head>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Pvm</th>
+            <th>Kello</th>
+            <th>Koulutus</th>
+            <th>Sijainti</th>
+            <th>Osallistuja</th>            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var ilmo in ilmoSearches)
+        {
+            <tr>
+                <td>@ilmo.Pvm.ToShortDateString()</td>
+                <td>@ilmo.KloAlku - @ilmo.KloLoppu</td>
+                <td>@ilmo.Koulutus</td>
+                <td>@ilmo.Sijainti</td>
+                <td>@ilmo.Osallistuja</td>
+                <td>
+                    <button type="button" class="btn btn-labeled btn-danger" @onclick="@Poista(ilmo.Varaus_ID)">
+                        <span class="btn-label">
+                            <i class="oi oi-trash"></i>
+                        </span>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (naytaPoistaModal)
+{
+    <div class="modal fade show" id="poistaModal" style="display:block" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Poisto</h4>
+                    <button type="button" class="close" @onclick="@PoistaPeruuta">&times;</button>
+                </div>
+
+                <div class="modal-body">
+                    Haluatko varmasti poistaa ilmoittautumisesi tähän koulutukseen?
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="@PoistaPeruuta">Peruuta</button>
+                    <button type="button" class="btn btn-success" @onclick="@PoistaOK">Poista</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<footer>
+    <p>&copy; EPSHP</p>
+</footer>
+
+@code {
+    private List<IlmoSearch> ilmoSearches = new List<IlmoSearch>();
+    private IlmoSearch ilmoSearch = new IlmoSearch();
+    private string user;
+    private bool naytaPoistaModal = false;
+    private int _varaus_id;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Käyttäjän tiedot
+        user = httpContextAccessor.HttpContext.User.Identity.Name;
+
+        // Haetaan ilmoittautumiset
+        ilmoSearches = await IlmoSearchService.GetIlmoSearchByVaraajaAsync(user);
+    }
+
+    void Poista(int varaus_id)
+    {
+        _varaus_id = varaus_id;
+        naytaPoistaModal = true;
+        Console.WriteLine("_varaus_id: " + _varaus_id.ToString());
+    }
+    void PoistaPeruuta() => naytaPoistaModal = false;
+    void PoistaOK()
+    {
+        Console.WriteLine("POISTO OK");
+    }
+}
