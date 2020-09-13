@@ -1,6 +1,7 @@
 @page "/hae"
 
 @inject IlmoSearchService IlmoSearchService;
+@inject IlmoittautuminenService IlmoittautuminenService;
 
 @using Microsoft.AspNetCore.Http
 @inject IHttpContextAccessor httpContextAccessor
@@ -30,7 +31,7 @@
                 <td>@ilmo.Sijainti</td>
                 <td>@ilmo.Osallistuja</td>
                 <td>
-                    <button type="button" class="btn btn-labeled btn-danger" @onclick="@Poista(ilmo.Varaus_ID)">
+                    <button type="button" class="btn btn-labeled btn-danger" @onclick="@(() => Poista(ilmo.Varaus_ID))">
                         <span class="btn-label">
                             <i class="oi oi-trash"></i>
                         </span>
@@ -52,7 +53,8 @@
                 </div>
 
                 <div class="modal-body">
-                    Haluatko varmasti poistaa ilmoittautumisesi tähän koulutukseen?
+                    <p>Haluatko varmasti poistaa ilmoittautumisesi tähän koulutukseen?</p>
+                    <p>@ilmoDetails.Koulutus @ilmoDetails.Pvm.ToShortDateString() klo @ilmoDetails.KloAlku - @ilmoDetails.KloLoppu</p>
                 </div>
 
                 <div class="modal-footer">
@@ -71,6 +73,7 @@
 @code {
     private List<IlmoSearch> ilmoSearches = new List<IlmoSearch>();
     private IlmoSearch ilmoSearch = new IlmoSearch();
+    private IlmoSearch ilmoDetails;
     private string user;
     private bool naytaPoistaModal = false;
     private int _varaus_id;
@@ -87,12 +90,17 @@
     void Poista(int varaus_id)
     {
         _varaus_id = varaus_id;
+        ilmoDetails = ilmoSearches.Single(i => i.Varaus_ID == varaus_id);
         naytaPoistaModal = true;
-        Console.WriteLine("_varaus_id: " + _varaus_id.ToString());
     }
     void PoistaPeruuta() => naytaPoistaModal = false;
-    void PoistaOK()
+    async void PoistaOK()
     {
-        Console.WriteLine("POISTO OK");
+        IlmoittautuminenService.DeleteOsallistujaAsync(_varaus_id);
+
+        // Haetaan ilmoittautumiset
+        ilmoSearches = await IlmoSearchService.GetIlmoSearchByVaraajaAsync(user);
+
+        naytaPoistaModal = false;
     }
 }

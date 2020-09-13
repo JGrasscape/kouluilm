@@ -131,5 +131,27 @@ namespace kouluilm.Data
                 }
             }
         }
+
+        public void DeleteOsallistujaAsync(int varaus_id)
+        {
+            // SQLite-kannan tiedot
+            var connectionStringBuilder = new SqliteConnectionStringBuilder();
+            connectionStringBuilder.DataSource = "./varaus.db";
+
+            // Avataan yhteys tietokantaan
+            using (var connection = new SqliteConnection(connectionStringBuilder.ConnectionString))
+            {
+                connection.Open();
+
+                using (var transaction = connection.BeginTransaction())
+                {
+                    var deleteCommand = connection.CreateCommand();
+                    
+                    deleteCommand.CommandText = "DELETE FROM koulutus_ilmoittautumiset WHERE varaus_id=" + varaus_id;
+                    deleteCommand.ExecuteNonQuery();
+                    transaction.Commit();
+                }
+            }
+        } 
     }
 }
