@@ -24,7 +24,7 @@
                 <option value="@koulutus.Koulutus_ID">@koulutus.Nimi</option>
             }
         </InputSelect>
-    </EditForm>
+    </EditForm>    
 </div>
 
 @if (koulutus.Koulutus_ID == null)
@@ -78,7 +78,7 @@ else
                                 <tbody>
                                     @{                                        
                                         bool found = false;
-                                        Console.WriteLine("Table, paikkalm: " + resurssi.Paikkalkm.ToString());
+                                        //Console.WriteLine("Table, paikkalm: " + resurssi.Paikkalkm.ToString());
                                     }                                    
                                     @for (int i = 1; i <= resurssi.Paikkalkm; i++)
                                     {
@@ -111,6 +111,17 @@ else
                 }                
             </tbody>
         </table>
+    </div>
+    <p></p>
+    <div class="form-group">
+        @if (naytaMenneet)
+        {
+            <button class="btn btn-primary" @onclick="@PiilotaMenneet">Piilota menneet</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" @onclick="@NaytaMenneet">Näytä menneet</button>
+        }        
     </div>
 }
 
@@ -217,15 +228,11 @@ else
     </div>
 }
 
-<footer>
+<footer style="position: fixed; bottom: 0; width: 80%; text-align: center;">
     <p>&copy; EPSHP</p>
 </footer>
 
 @code {
-    // TODO:
-    // Näytä menneet koulutukset
-    // Siivoa TODOt
-    // Siivoa DEBUGit
     private Koulutus koulutus = new Koulutus();
     private List<Koulutus> koulutukset;
     private Resurssi resurssi = new Resurssi();
@@ -234,7 +241,7 @@ else
     private List<Ilmoittautuminen> ilmoittautumiset;
     private Ilmoittautuminen ilmo = new Ilmoittautuminen();
     private string selite = "", ilmoMessu = "", user = "";
-    private bool naytaOsallistujat = false, naytaOsallistujatModal = false, ilmoittauduDisabled = false, naytaKaavake = false;
+    private bool naytaOsallistujat = false, naytaOsallistujatModal = false, ilmoittauduDisabled = false, naytaKaavake = false, naytaMenneet = false;
 
     private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm)
     {   
@@ -248,7 +255,7 @@ else
         ilmo.OsallistujaLkm = osallistujaLkm;
 
         // DEBUG
-        Console.WriteLine("naytaOsallistujatFunc ilmo.paikkalkm: {0}", ilmo.PaikkaLkm);
+        //Console.WriteLine("naytaOsallistujatFunc ilmo.paikkalkm: {0}", ilmo.PaikkaLkm);
 
         // Mahtuuko mukaan?
         if (ilmo.OsallistujaLkm < ilmo.PaikkaLkm)
@@ -302,7 +309,7 @@ else
         ilmo.Varaaja = httpContextAccessor.HttpContext.User.Identity.Name;
         if (IlmoittautuminenService.InsertOsallistujaAsync(ilmo))
         {
-            Console.WriteLine("Varaus onnistui!");
+            //Console.WriteLine("Varaus onnistui!");
 
             // Piilotetaan dialogi ja haetaan ilmoittautumiset        
             ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(ilmo.Linkki_Varaus_ID);
@@ -328,14 +335,14 @@ else
         }
         else
         {
-            Console.WriteLine("Varaus ei onnistunut!");
+            //Console.WriteLine("Varaus ei onnistunut!");
             ilmoMessu = "Varaus ei onnistunut!";
         }
     }
 
     protected override async Task OnInitializedAsync()
     {
-        // Haetaan tulevat koulutukset ja resurssit
+        // Haetaan koulutukset ja resurssit
         koulutukset = await KoulutusService.GetKoulutusAsync("=0");
         resurssit = await ResurssiService.GetResurssiAsync();
         
@@ -371,6 +378,12 @@ else
             }
         }
 
+        // Haetaanko vain tulevat koulutukset        
+        if (!naytaMenneet)
+        {
+            sql += " AND varauspvm >= '" + DateTime.Today.ToString("yyyy-MM-dd") + "'";
+        }
+
         // Koulutuksiin käytettävät resurssit
         string sql2 = "";
 
@@ -378,8 +391,6 @@ else
         {
             sql2 += r.Resurssi_ID.ToString() + ", ";
         }
-
-        // TODO: tarkista haetaanko vain tulevat koulutukset        
 
         // Haetaan tilavaraukset
         //varaukset = await VarausService.GetVarausAsync(sql, sql2, int.Parse(koulutus.Koulutus_ID));
@@ -392,5 +403,17 @@ else
         }
 
         //return Task.CompletedTask;
+    }
+
+    private async void PiilotaMenneet()
+    {
+        naytaMenneet = false;
+        await koulutusMuutos(ilmo.Koulutus_ID.ToString());
+    }
+
+    private async void NaytaMenneet()
+    {
+        naytaMenneet = true;
+        await koulutusMuutos(ilmo.Koulutus_ID.ToString());
     }
 }
