@@ -1186,19 +1186,20 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\villa\\.nuget\\packages\\": {}
+    "C:\\Users\\ruohoniemi_j\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\temp\\Ohjelmistoprojekti\\kouluilm\\kouluilm.csproj",
+      "projectUniqueName": "C:\\OHSU19S\\kouluilm\\kouluilm.csproj",
       "projectName": "kouluilm",
-      "projectPath": "C:\\temp\\Ohjelmistoprojekti\\kouluilm\\kouluilm.csproj",
-      "packagesPath": "C:\\Users\\villa\\.nuget\\packages\\",
-      "outputPath": "C:\\temp\\Ohjelmistoprojekti\\kouluilm\\obj\\",
+      "projectPath": "C:\\OHSU19S\\kouluilm\\kouluilm.csproj",
+      "packagesPath": "C:\\Users\\ruohoniemi_j\\.nuget\\packages\\",
+      "outputPath": "C:\\OHSU19S\\kouluilm\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\villa\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\OHSU19S\\kouluilm\\NuGet.Config",
+        "C:\\Users\\ruohoniemi_j\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
