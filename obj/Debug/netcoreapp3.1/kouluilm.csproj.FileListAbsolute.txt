@@ -179,3 +179,4 @@ C:\OHSU19S\kouluilm\obj\Debug\netcoreapp3.1\staticwebassets\kouluilm.StaticWebAs
 C:\OHSU19S\kouluilm\obj\Debug\netcoreapp3.1\kouluilm.dll
 C:\OHSU19S\kouluilm\obj\Debug\netcoreapp3.1\kouluilm.pdb
 C:\OHSU19S\kouluilm\obj\Debug\netcoreapp3.1\kouluilm.genruntimeconfig.cache
+C:\temp\Ohjelmistoprojekti\kouluilm\bin\Debug\netcoreapp3.1\nuget.config

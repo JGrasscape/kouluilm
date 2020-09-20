@@ -369,7 +369,7 @@ else
             sql += " AND aihe LIKE '%" + sana + "%'";
         }
 
-        if (koulutus.Kieltosanat != null)
+        if (!string.IsNullOrWhiteSpace(koulutus.Kieltosanat))
         {
             sanat = koulutus.Kieltosanat.Split(' ');
             foreach (string sana in sanat)
