@@ -3,7 +3,7 @@
 SeAMK ohjelmistosuunnittelun koulutusohjelman projektityö.
 
 ## Vaatimukset
-- .NET SDK 3.1 https://dotnet.microsoft.com/download/dotnet-core/3.1
+- .NET 3.1 https://dotnet.microsoft.com/download/dotnet-core/3.1
 
 ## Ajo-ohje
 Projektin juuresta ajetaan komento:
