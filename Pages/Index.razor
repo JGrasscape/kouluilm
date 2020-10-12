@@ -54,7 +54,7 @@ else
                     // Valitaan varaukseen kuuluva resurssi
                     resurssi = resurssit.Single(r => r.Resurssi_ID == varaus.Resurssi_ID);
                     
-                    <tr @onclick="@(() => naytaOsallistujatFunc(varaus.Varaus_ID, varaus.Osallistujat))">
+                    <tr @onclick="@(() => naytaOsallistujatFunc(varaus.Varaus_ID, varaus.Osallistujat, varaus.Varauspvm))">
                         <td>@varaus.Varauspvm.ToShortDateString()</td>
                         <td>@varaus.Kloalku - @varaus.Kloloppu</td>
                         <td>@resurssi.Nimi</td>
@@ -243,7 +243,7 @@ else
     private string selite = "", ilmoMessu = "", user = "";
     private bool naytaOsallistujat = false, naytaOsallistujatModal = false, ilmoittauduDisabled = false, naytaKaavake = false, naytaMenneet = false;
 
-    private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm)
+    private async void naytaOsallistujatFunc(int varaus_id, int osallistujaLkm, DateTime varausPvm)
     {   
         // Haetaan ilmoittautujat   
         ilmoittautumiset = await IlmoittautuminenService.GetOsallistujatAsync(varaus_id);
@@ -255,16 +255,17 @@ else
         ilmo.OsallistujaLkm = osallistujaLkm;
 
         // DEBUG
-        //Console.WriteLine("naytaOsallistujatFunc ilmo.paikkalkm: {0}", ilmo.PaikkaLkm);
+        //Console.WriteLine("naytaOsallistujatFunc ilmo.paikkalkm: {0}", ilmo.PaikkaLkm);        
 
-        // Mahtuuko mukaan?
-        if (ilmo.OsallistujaLkm < ilmo.PaikkaLkm)
+        // Mahtuuko mukaan tai onko koulutus menneisyydessä?
+        int compare = DateTime.Compare(varausPvm, DateTime.Now);
+        if ((ilmo.OsallistujaLkm >= ilmo.PaikkaLkm) || (compare == -1))
         {
-            ilmoittauduDisabled = false;
+            ilmoittauduDisabled = true;
         }
         else
         {
-            ilmoittauduDisabled = true;
+            ilmoittauduDisabled = false;
         }
 
         // Taulukko osallistujista
